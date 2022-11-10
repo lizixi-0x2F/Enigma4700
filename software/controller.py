@@ -1,22 +1,21 @@
 import os
-import assembly
 import pin
+import assembly as ASM
 
 dirname = os.path.dirname(__file__)
-filename = os.path.join(dirname, "micro.txt")
+filename = os.path.join(dirname, 'micro.bin')
 
-micro = [
-    pin.HLT for _ in range(0x10000)
-]
+micro = [pin.HLT for _ in range(0x10000)]
 
 
 def compile_addr2(addr, ir, psw, index):
     global micro
+
     op = ir & 0xf0
     amd = (ir >> 2) & 3
     ams = ir & 3
 
-    INST = assembly.INSTRUCTIONS[2]
+    INST = ASM.INSTRUCTIONS[2]
     if op not in INST:
         micro[addr] = pin.CYC
         return
@@ -24,6 +23,7 @@ def compile_addr2(addr, ir, psw, index):
     if am not in INST[op]:
         micro[addr] = pin.CYC
         return
+
     EXEC = INST[op][am]
     if index < len(EXEC):
         micro[addr] = EXEC[index]
@@ -37,9 +37,10 @@ def compile_addr1(addr, ir, psw, index):
 
 def compile_addr0(addr, ir, psw, index):
     global micro
+
     op = ir
 
-    INST = assembly.INSTRUCTIONS[2]
+    INST = ASM.INSTRUCTIONS[0]
     if op not in INST:
         micro[addr] = pin.CYC
         return
@@ -56,20 +57,22 @@ for addr in range(0x10000):
     psw = (addr >> 4) & 0xf
     cyc = addr & 0xf
 
-    if cyc < len(assembly.FETCH):
-        micro[addr] = assembly.FETCH[cyc]
+    if cyc < len(ASM.FETCH):
+        micro[addr] = ASM.FETCH[cyc]
         continue
+
     addr2 = ir & (1 << 7)
     addr1 = ir & (1 << 6)
 
-    index = cyc-len(assembly.FETCH)
+    index = cyc - len(ASM.FETCH)
+
     if addr2:
         compile_addr2(addr, ir, psw, index)
     elif addr1:
         compile_addr1(addr, ir, psw, index)
-
     else:
         compile_addr0(addr, ir, psw, index)
+
 
 
 with open(filename, "w") as file:

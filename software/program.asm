@@ -1,2 +1,2 @@
-MOV A, 3
+MOV B, 3
 HLT

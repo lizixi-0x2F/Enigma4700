@@ -1,6 +1,8 @@
+# coding=utf-8
+
 MSR = 1
 MAR = 2
-MBR = 2
+MDR = 3
 RAM = 4
 IR = 5
 DST = 6
@@ -21,11 +23,9 @@ VEC = 20
 T1 = 21
 T2 = 22
 
-_DST_SHIFT = 5
-
 MSR_OUT = MSR
 MAR_OUT = MAR
-MBR_OUT = MBR
+MDR_OUT = MDR
 RAM_OUT = RAM
 IR_OUT = IR
 DST_OUT = DST
@@ -46,9 +46,11 @@ VEC_OUT = VEC
 T1_OUT = T1
 T2_OUT = T2
 
+_DST_SHIFT = 5
+
 MSR_IN = MSR << _DST_SHIFT
 MAR_IN = MAR << _DST_SHIFT
-MBR_IN = MBR << _DST_SHIFT
+MDR_IN = MDR << _DST_SHIFT
 RAM_IN = RAM << _DST_SHIFT
 IR_IN = IR << _DST_SHIFT
 DST_IN = DST << _DST_SHIFT
@@ -69,30 +71,41 @@ VEC_IN = VEC << _DST_SHIFT
 T1_IN = T1 << _DST_SHIFT
 T2_IN = T2 << _DST_SHIFT
 
-SRC_R = 2**10
-SRC_W = 2**11
-DST_R = 2**12
-DST_W = 2**13
+SRC_R = 2 ** 10
+SRC_W = 2 ** 11
+DST_R = 2 ** 12
+DST_W = 2 ** 13
 
-PC_WE = 2**14
-PC_CS = 2**15
-PC_EN = 2**16
+PC_WE = 2 ** 14
+PC_CS = 2 ** 15
+PC_EN = 2 ** 16
 
 PC_OUT = PC_CS
-
 PC_IN = PC_CS | PC_WE
 PC_INC = PC_CS | PC_WE | PC_EN
 
-HLT = 2**31
 
-ADDR2 = 1 << 7
-ADDR1 = 1 << 6
-ADDR2_SHIFT = 4
-ADDR1_SHIFT = 2
+HLT = 2 ** 31
 
-AM_INS = 0
-AM_REG = 1
-AM_DIR = 2
-AM_RAM = 3
+CYC = 2 ** 30
+HLT = 2 ** 31
 
-CYC = 2**30
+
+# 指令长度定义
+
+ADDR2 = 1 << 7  # 二地址指令 1xxx xxxx
+ADDR1 = 1 << 6  # 一地址指令 01xx xxxx
+
+ADDR2_SHIFT = 4  # 二地址指令偏移
+ADDR1_SHIFT = 2  # 一地址指令偏移
+
+# 寻址方式定义
+
+AM_INS = 0  # 立即寻址编号
+AM_REG = 1  # 寄存器寻址编号
+AM_DIR = 2  # 直接寻址编号
+AM_RAM = 3  # 寄存器间接寻址编号
+
+
+CYC = 2 ** 30
+HLT = 2 ** 31
